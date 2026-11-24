@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import type { Status } from "@/lib/db";
 
 export const LOGO =
@@ -112,3 +112,26 @@ export const btnPrimary =
   "inline-flex items-center justify-center gap-1.5 rounded-lg bg-primary px-3 py-2 font-mono text-xs font-semibold text-primary-foreground hover:bg-primary-strong disabled:opacity-50";
 export const btnGhost =
   "inline-flex items-center justify-center gap-1.5 rounded-lg border border-border bg-surface-low px-3 py-2 font-mono text-xs font-semibold hover:bg-surface-mid disabled:opacity-50";
+
+export function Avatar({ username, size = 36 }: { username: string; size?: number }) {
+  const [failed, setFailed] = useState(false);
+  const px = size * 2;
+  return failed ? (
+    <span
+      style={{ width: size, height: size }}
+      className="flex items-center justify-center rounded-full bg-primary text-primary-foreground"
+    >
+      <Icon name="person" className="text-[20px]" />
+    </span>
+  ) : (
+    <img
+      src={`https://picsum.photos/seed/${encodeURIComponent(username)}/${px}/${px}`}
+      alt={`Foto de perfil de ${username}`}
+      width={size}
+      height={size}
+      onError={() => setFailed(true)}
+      className="rounded-full object-cover"
+      style={{ width: size, height: size }}
+    />
+  );
+}

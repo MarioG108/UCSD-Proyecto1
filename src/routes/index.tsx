@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Toaster } from "sonner";
 import { useSession, type Role } from "@/lib/auth";
 import { useNovelties, useOrders } from "@/lib/db";
-import { Icon, LOGO } from "@/components/app/shared";
+import { Avatar, Icon, LOGO } from "@/components/app/shared";
 import { Login } from "@/components/app/Login";
 import { ALL_BRANCHES, BRANCHES, KpiRow, Monitor } from "@/components/app/Monitor";
 import { PodPanel } from "@/components/app/Pod";
@@ -312,16 +312,19 @@ function Shell({
                   setProfile(!profile);
                   setBell(false);
                 }}
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm"
+                className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full shadow-sm ring-2 ring-primary"
               >
-                <Icon name="person" className="text-[20px]" />
+                <Avatar username={username} />
               </button>
               {profile && (
                 <div className="absolute right-0 top-11 w-56 rounded-xl border border-border bg-card p-2 shadow-card">
-                  <div className="px-2 py-1">
-                    <div className="font-semibold">{username}</div>
-                    <div className="label-caps text-muted-foreground">
-                      {role === "admin" ? "Administrador" : "Usuario"}
+                  <div className="flex items-center gap-2 px-2 py-1">
+                    <Avatar username={username} size={32} />
+                    <div className="min-w-0">
+                      <div className="font-semibold">{username}</div>
+                      <div className="label-caps text-muted-foreground">
+                        {role === "admin" ? "Administrador" : "Usuario"}
+                      </div>
                     </div>
                   </div>
                   <button
