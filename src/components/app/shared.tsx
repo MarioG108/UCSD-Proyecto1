@@ -63,10 +63,13 @@ export function StatusPill({ status }: { status: Status }) {
     </span>
   );
 }
-
-export function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
+export function Card({
+  children,
+  className = "",
+  ...rest
+}: { children: ReactNode; className?: string } & React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={`rounded-xl border border-border bg-card shadow-card ${className}`}>
+    <div {...rest} className={`rounded-xl border border-border bg-card shadow-card ${className}`}>
       {children}
     </div>
   );

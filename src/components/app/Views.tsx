@@ -6,7 +6,7 @@ import { CREWS, matchesQuery } from "./Monitor";
 
 function Title({ icon, title, sub }: { icon: string; title: string; sub: string }) {
   return (
-    <div className="flex items-center gap-3">
+    <div data-tour="view-title" className="flex items-center gap-3">
       <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-success-line bg-success-soft text-primary">
         <Icon name={icon} />
       </div>
@@ -33,7 +33,7 @@ export function RoutesView({
   return (
     <div className="flex flex-col gap-4">
       <Title icon="local_shipping" title="Rutas Activas" sub={`${rows.length} despachos en ruta`} />
-      <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
+      <div data-tour="view-content" className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
         {rows.map((o) => (
           <Card key={o.id} className="flex flex-col gap-3 p-4">
             <div className="flex items-start justify-between gap-2">
@@ -77,7 +77,7 @@ export function CrewsView({
   return (
     <div className="flex flex-col gap-4">
       <Title icon="group" title="Cuadrillas" sub={`${CREWS.length} cuadrillas operativas`} />
-      <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
+      <div data-tour="view-content" className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
         {CREWS.map((c) => {
           const mine = orders.filter((o) => o.crew === c.crew);
           const active = mine.filter((o) => ACTIVE.includes(o.status)).length;
@@ -198,7 +198,7 @@ export function NoveltiesView({
           Solo el administrador puede resolver novedades.
         </p>
       )}
-      <div className="flex flex-col gap-3">
+      <div data-tour="view-content" className="flex flex-col gap-3">
         {open.map(row)}
         {open.length === 0 && <p className="text-muted-foreground">Sin novedades abiertas.</p>}
       </div>
@@ -229,7 +229,7 @@ export function PodListView({
         title="Proof of Delivery (POD)"
         sub={`${rows.length} expedientes verificados`}
       />
-      <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
+      <div data-tour="view-content" className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
         {rows.map((o) => (
           <Card key={o.id} className="flex flex-col gap-2 p-4">
             <div className="flex items-center justify-between">

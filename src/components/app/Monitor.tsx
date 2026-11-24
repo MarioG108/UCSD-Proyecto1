@@ -110,7 +110,7 @@ export function KpiRow({
   const open = novelties.filter((n) => !n.resolved);
   const count = (t: string) => open.filter((n) => n.type === t).length;
   return (
-    <section className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
+    <section data-tour="kpis" className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
       <p className="label-caps col-span-full text-muted-foreground">Indicadores · {branch}</p>
       <Kpi
         title="Tasa de Puntualidad (OTD)"
@@ -347,7 +347,7 @@ export function Monitor({
     );
 
   return (
-    <Card className="flex flex-col overflow-hidden xl:col-span-7">
+    <Card data-tour="monitor" className="flex flex-col overflow-hidden xl:col-span-7">
       <div className="flex flex-col gap-3 border-b border-border p-4 sm:p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
