@@ -63,10 +63,13 @@ export function StatusPill({ status }: { status: Status }) {
     </span>
   );
 }
-
-export function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
+export function Card({
+  children,
+  className = "",
+  ...rest
+}: { children: ReactNode; className?: string } & React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={`rounded-xl border border-border bg-card shadow-card ${className}`}>
+    <div {...rest} className={`rounded-xl border border-border bg-card shadow-card ${className}`}>
       {children}
     </div>
   );
@@ -75,20 +78,47 @@ export function Card({ children, className = "" }: { children: ReactNode; classN
 export function Modal({
   title,
   onClose,
+  confirmOutsideClose,
   children,
 }: {
   title: string;
   onClose: () => void;
+  /** Si se define, un clic fuera del popup pide confirmación antes de cerrar. */
+  confirmOutsideClose?: string;
   children: ReactNode;
 }) {
+  const [asking, setAsking] = useState(false);
+  const onBackdrop = () => (confirmOutsideClose ? setAsking(true) : onClose());
   return (
     <div
       className="fixed inset-0 z-[60] flex items-center justify-center bg-foreground/50 p-4"
-      onClick={onClose}
+      onClick={onBackdrop}
     >
+      {asking && (
+        <div
+          role="alertdialog"
+          aria-label="Confirmar cierre"
+          className="absolute z-10 w-full max-w-sm rounded-xl border border-border bg-card p-5 shadow-card"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <p className="font-semibold">¿Cerrar sin guardar?</p>
+          <p className="mt-1 text-[13px] text-muted-foreground">{confirmOutsideClose}</p>
+          <div className="mt-4 flex justify-end gap-2">
+            <button type="button" autoFocus onClick={() => setAsking(false)} className={btnGhost}>
+              Seguir editando
+            </button>
+            <button type="button" onClick={onClose} className={btnPrimary}>
+              Sí, cerrar
+            </button>
+          </div>
+        </div>
+      )}
       <div
         className="max-h-[90vh] w-full max-w-lg overflow-auto rounded-xl border border-border bg-card p-5 shadow-card"
-        onClick={(e) => e.stopPropagation()}
+        onClick={(e) => {
+          e.stopPropagation();
+          if (asking) setAsking(false);
+        }}
       >
         <div className="mb-4 flex items-center justify-between">
           <h3 className="text-lg font-bold">{title}</h3>
