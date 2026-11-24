@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Toaster } from "sonner";
 import { useSession, type Role } from "@/lib/auth";
 import { useNovelties, useOrders } from "@/lib/db";
-import { Icon, LOGO } from "@/components/app/shared";
+import { Avatar, Icon, LOGO } from "@/components/app/shared";
 import { Login } from "@/components/app/Login";
 import { ALL_BRANCHES, BRANCHES, KpiRow, Monitor } from "@/components/app/Monitor";
 import { PodPanel } from "@/components/app/Pod";
@@ -29,6 +29,14 @@ export const Route = createFileRoute("/")({
   }),
   component: App,
 });
+
+// Puntualidad (OTD) dummy por sucursal
+const OTD_BY_BRANCH: Record<string, number> = {
+  "Sucursal Churchill": 95.1,
+  "Sucursal Luperón": 93.4,
+  "Sucursal San Isidro": 94.6,
+  "Sucursal Villa Mella": 92.2,
+};
 
 type View = "dashboard" | "routes" | "crews" | "novelties" | "pod";
 const NAV: { view: View; icon: string; label: string }[] = [
@@ -79,6 +87,9 @@ function Shell({
   const list = orders.data ?? [];
   const nov = novelties.data ?? [];
   const openNov = nov.filter((n) => !n.resolved);
+  const branchOrders = branch === ALL_BRANCHES ? list : list.filter((o) => o.branch === branch);
+  const branchIds = new Set(branchOrders.map((o) => o.id));
+  const branchNov = nov.filter((n) => branchIds.has(n.order_id));
   const order = list.find((o) => o.id === selected) ?? list[0];
 
   useEffect(() => {
@@ -312,16 +323,19 @@ function Shell({
                   setProfile(!profile);
                   setBell(false);
                 }}
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm"
+                className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full shadow-sm ring-2 ring-primary"
               >
-                <Icon name="person" className="text-[20px]" />
+                <Avatar username={username} />
               </button>
               {profile && (
                 <div className="absolute right-0 top-11 w-56 rounded-xl border border-border bg-card p-2 shadow-card">
-                  <div className="px-2 py-1">
-                    <div className="font-semibold">{username}</div>
-                    <div className="label-caps text-muted-foreground">
-                      {role === "admin" ? "Administrador" : "Usuario"}
+                  <div className="flex items-center gap-2 px-2 py-1">
+                    <Avatar username={username} size={32} />
+                    <div className="min-w-0">
+                      <div className="font-semibold">{username}</div>
+                      <div className="label-caps text-muted-foreground">
+                        {role === "admin" ? "Administrador" : "Usuario"}
+                      </div>
                     </div>
                   </div>
                   <button
@@ -353,8 +367,10 @@ function Shell({
           {!orders.isLoading && view === "dashboard" && (
             <>
               <KpiRow
-                orders={list}
-                novelties={nov}
+                orders={branchOrders}
+                novelties={branchNov}
+                otd={OTD_BY_BRANCH[branch] ?? 94.2}
+                branch={branch}
                 onGoNovelties={() => go("novelties")}
                 onGoRoutes={() => go("routes")}
               />
@@ -373,12 +389,7 @@ function Shell({
                 />
                 <div id="pod" className="scroll-mt-20 xl:col-span-5">
                   {order ? (
-                    <PodPanel
-                      key={order.id}
-                      order={order}
-                      role={role}
-                      onDeleted={() => setSelected("")}
-                    />
+                    <PodPanel key={order.id} order={order} role={role} />
                   ) : (
                     <p className="text-muted-foreground">Selecciona un despacho.</p>
                   )}

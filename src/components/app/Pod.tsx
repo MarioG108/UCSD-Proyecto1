@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from "react";
 import { toast } from "sonner";
-import { nextStatus, useDeleteOrder, useUpdateStatus, type Order } from "@/lib/db";
+import { nextStatus, useUpdateStatus, type Order } from "@/lib/db";
 import type { Role } from "@/lib/auth";
 import { Card, Icon, Modal, POD_PHOTO, StatusPill, btnGhost, btnPrimary } from "./shared";
 import { NoveltyModal } from "./Monitor";
@@ -24,18 +24,9 @@ async function downloadVale(o: Order) {
   }
 }
 
-export function PodPanel({
-  order,
-  role,
-  onDeleted,
-}: {
-  order: Order;
-  role: Role;
-  onDeleted: () => void;
-}) {
+export function PodPanel({ order, role }: { order: Order; role: Role }) {
   const delivered = order.status === "Entregado conforme";
   const update = useUpdateStatus();
-  const del = useDeleteOrder();
   const [hd, setHd] = useState(false);
   const [reporting, setReporting] = useState(false);
   const next = nextStatus(order.status);
@@ -49,16 +40,6 @@ export function PodPanel({
         onError: (e) => toast.error((e as Error).message),
       },
     );
-  const remove = () => {
-    if (!window.confirm(`¿Eliminar el despacho ${order.id}?`)) return;
-    del.mutate(order.id, {
-      onSuccess: () => {
-        toast.success("Despacho eliminado");
-        onDeleted();
-      },
-      onError: (e) => toast.error((e as Error).message),
-    });
-  };
   const when = order.delivered_at
     ? new Date(order.delivered_at).toLocaleString("es-DO")
     : "Pendiente de cierre";
@@ -92,12 +73,6 @@ export function PodPanel({
             <button onClick={() => setReporting(true)} className={btnGhost}>
               <Icon name="report_problem" className="text-[14px]" />
               Reportar novedad
-            </button>
-          )}
-          {role === "admin" && (
-            <button onClick={remove} disabled={del.isPending} className={btnGhost}>
-              <Icon name="delete" className="text-[14px]" />
-              Eliminar
             </button>
           )}
         </div>

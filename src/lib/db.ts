@@ -113,12 +113,6 @@ export function useCreateOrder() {
   );
 }
 
-export function useDeleteOrder() {
-  return useInvalidating(async (id: string) =>
-    ok(await supabase.from("dispatch_orders").delete().eq("id", id)),
-  );
-}
-
 export function useReportNovelty() {
   return useInvalidating(
     async ({
