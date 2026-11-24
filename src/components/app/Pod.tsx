@@ -4,6 +4,7 @@ import { nextStatus, useDeleteOrder, useUpdateStatus, type Order } from "@/lib/d
 import type { Role } from "@/lib/auth";
 import { Card, Icon, Modal, POD_PHOTO, StatusPill, btnGhost, btnPrimary } from "./shared";
 import { NoveltyModal } from "./Monitor";
+import { downloadPodPdf } from "@/lib/pod-pdf";
 
 function Field({ label, children, wide }: { label: string; children: ReactNode; wide?: boolean }) {
   return (
@@ -14,20 +15,13 @@ function Field({ label, children, wide }: { label: string; children: ReactNode; 
   );
 }
 
-const esc = (s: string) =>
-  s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]!);
-
-function downloadVale(o: Order) {
-  const html = `<!doctype html><html lang="es"><meta charset="utf-8"><title>Vale POD ${esc(o.id)}</title>
-<body style="font-family:sans-serif;max-width:640px;margin:2rem auto"><h1>La Sirena · Vale POD</h1>
-<p><b>Orden:</b> ${esc(o.id)}<br><b>Artículo:</b> ${esc(o.item)}<br><b>Estado:</b> ${esc(o.status)}<br><b>Cliente:</b> ${esc(o.client)}<br><b>Cédula:</b> ${esc(o.customer_cedula)}<br><b>Dirección:</b> ${esc(o.address)}<br><b>Teléfono:</b> ${esc(o.phone)}<br><b>Sucursal:</b> ${esc(o.branch)}<br><b>Transporte:</b> ${esc(o.crew)} · ${esc(o.driver)} · ${esc(o.vehicle)}<br><b>Entrega:</b> ${o.delivered_at ? new Date(o.delivered_at).toLocaleString("es-DO") : "Pendiente"}</p></body></html>`;
-  const url = URL.createObjectURL(new Blob([html], { type: "text/html" }));
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `vale-pod-${o.id.replace("#", "")}.html`;
-  a.click();
-  URL.revokeObjectURL(url);
-  toast.success("Vale POD descargado");
+async function downloadVale(o: Order) {
+  try {
+    await downloadPodPdf(o);
+    toast.success("Vale POD descargado (PDF)");
+  } catch {
+    toast.error("No se pudo generar el PDF");
+  }
 }
 
 export function PodPanel({
@@ -258,7 +252,7 @@ export function PodPanel({
             className="flex w-full items-center justify-center gap-1.5 rounded-lg bg-primary px-3 py-2.5 font-mono text-xs font-semibold text-primary-foreground shadow-primary hover:bg-primary-strong sm:w-auto sm:flex-1"
           >
             <Icon name="download" className="text-[16px]" />
-            Descargar Vale POD
+            Descargar Vale POD (PDF)
           </button>
           <button
             title="Imprimir"
