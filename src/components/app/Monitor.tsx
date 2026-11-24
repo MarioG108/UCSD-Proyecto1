@@ -110,7 +110,7 @@ export function KpiRow({
   const open = novelties.filter((n) => !n.resolved);
   const count = (t: string) => open.filter((n) => n.type === t).length;
   return (
-    <section className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
+    <section data-tour="kpis" className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
       <p className="label-caps col-span-full text-muted-foreground">Indicadores · {branch}</p>
       <Kpi
         title="Tasa de Puntualidad (OTD)"
@@ -347,7 +347,7 @@ export function Monitor({
     );
 
   return (
-    <Card className="flex flex-col overflow-hidden xl:col-span-7">
+    <Card data-tour="monitor" className="flex flex-col overflow-hidden xl:col-span-7">
       <div className="flex flex-col gap-3 border-b border-border p-4 sm:p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
@@ -579,6 +579,100 @@ export function Monitor({
 }
 
 /* ---------- Nuevo despacho (admin) ---------- */
+// Artículos de ejemplo por categoría, sugeridos al crear un despacho
+export const ARTICLE_SUGGESTIONS: Record<string, string[]> = {
+  "Línea Blanca (Electro-Hogar)": [
+    "Nevera Samsung French Door 28ft³",
+    "Nevera Frigidaire 18ft³ Top Mount",
+    "Nevera Whirlpool 20ft³",
+    "Lavadora LG TurboWash 22kg Inverter",
+    "Lavadora Samsung 18kg",
+    "Secadora Eléctrica Frigidaire 20kg",
+    "Secadora LG 17kg",
+    "Estufa Whirpool 6 Quemadores Acero",
+    "Estufa Mabe 5 Quemadores",
+    'Cocina Empotrable Mabe 30"',
+    "Congelador Horizontal Nedoca 15ft³",
+    "Congelador Vertical 14ft³",
+    "Lavavajillas Bosch Serie 4",
+    "Aire Acondicionado Inverter 18000 BTU",
+    "Aire Acondicionado 12000 BTU",
+    "Microondas Panasonic 1.2ft³ Inox",
+    "Dispensador de Agua Frío/Caliente",
+    'Horno Empotrable Eléctrico 30"',
+    'Campana Extractora Inox 30"',
+    "Mini Nevera Frigobar 3.2ft³",
+    "Nevera Side by Side LG 26ft³",
+    "Lavadora-Secadora Combo LG 4.5ft³",
+    "Aire Acondicionado Portátil 14000 BTU",
+    "Aire Acondicionado Split 24000 BTU",
+    "Calentador de Agua a Gas 6L",
+    "Cocina a Gas 4 Hornillas Mabe",
+    "Tope de Cocina Vitrocerámico",
+  ],
+  "Electrónica Menor": [
+    'Smart TV Samsung 65" 4K',
+    'Smart TV LG 55" 4K',
+    'Smart TV TCL 43" Full HD',
+    "Barra de Sonido Sony 2.1",
+    "Microondas Samsung 1.1ft³",
+    "Licuadora Oster 600W",
+    "Freidora de Aire Ninja 5.5L",
+    "Aspiradora Robot Xiaomi",
+    'Laptop HP 15" Core i5',
+    "Tablet Samsung Galaxy Tab A9",
+    "Cafetera Oster 12 Tazas",
+    "Tostadora Black+Decker 2 Rebanadas",
+    "Batidora de Mano Oster",
+    "Batidora de Pedestal KitchenAid",
+    "Arrocera Oster 10 Tazas",
+    "Olla de Presión Eléctrica Instant Pot 6qt",
+    "Hervidor Eléctrico 1.7L",
+    "Plancha de Vapor Black+Decker",
+    "Sandwichera Eléctrica",
+    "Horno Tostador Oster 6 Rebanadas",
+    "Extractor de Jugos Philips",
+    "Procesador de Alimentos Cuisinart",
+    'Abanico de Pedestal 18"',
+    "Ventilador de Torre Lasko",
+    "Calentador de Agua Eléctrico 40 gal",
+    "Purificador de Aire Xiaomi",
+    "Deshumidificador 35 pintas",
+    "Plancha de Cabello Remington",
+    "Secador de Pelo Conair 2000W",
+  ],
+  "Muebles & Terraza": [
+    "Juego de Sala Modular 3 piezas",
+    "Sofá Cama 3 Puestos",
+    "Comedor 6 Sillas Madera",
+    "Cama King con Cabecera",
+    "Colchón Ortopédico Queen",
+    "Escritorio Ejecutivo en L",
+    "Juego de Terraza 4 Piezas",
+    "Gabinete Multiusos 5 Niveles",
+    "Mecedora de Mimbre",
+  ],
+  "Supermercado Seco": [
+    "Paleta Arroz Selecto 50 lb (20 sacos)",
+    "Caja Aceite Vegetal 12 uds",
+    "Paleta Agua Embotellada 5 gal",
+    "Caja Pasta Espagueti 20 uds",
+    "Caja Habichuelas Rojas 24 uds",
+    "Paleta Azúcar Crema 25 lb",
+    "Caja Detergente en Polvo 12 uds",
+    "Caja Papel Higiénico 48 rollos",
+  ],
+};
+
+function L({ t, children }: { t: string; children: ReactNode }) {
+  return (
+    <label className="flex flex-col gap-1">
+      <span className="label-caps text-muted-foreground">{t}</span>
+      {children}
+    </label>
+  );
+}
+
 export function NewOrderModal({
   orders,
   onClose,
@@ -623,18 +717,45 @@ export function NewOrderModal({
       },
     );
   };
-  const L = ({ t, children }: { t: string; children: ReactNode }) => (
-    <label className="flex flex-col gap-1">
-      <span className="label-caps text-muted-foreground">{t}</span>
-      {children}
-    </label>
-  );
+  const suggestions = ARTICLE_SUGGESTIONS[f.category] ?? [];
+  const typed = f.item.trim().toLowerCase();
+  const chips = suggestions
+    .filter((s) => s.toLowerCase().includes(typed) && s !== f.item)
+    .slice(0, 6);
   return (
     <Modal title="Nuevo despacho" onClose={onClose}>
       <form onSubmit={submit} className="flex flex-col gap-3">
-        <L t="Artículo">
-          <input required className={inputCls} value={f.item} onChange={set("item")} />
-        </L>
+        <div className="flex flex-col gap-1.5">
+          <L t="Artículo">
+            <input
+              required
+              list="article-suggestions"
+              placeholder="Escribe o elige una sugerencia…"
+              className={inputCls}
+              value={f.item}
+              onChange={set("item")}
+            />
+          </L>
+          <datalist id="article-suggestions">
+            {suggestions.map((s) => (
+              <option key={s} value={s} />
+            ))}
+          </datalist>
+          {chips.length > 0 && (
+            <div className="flex flex-wrap gap-1.5" aria-label="Sugerencias de artículos">
+              {chips.map((s) => (
+                <button
+                  key={s}
+                  type="button"
+                  onClick={() => setF({ ...f, item: s })}
+                  className="rounded-full border border-border bg-surface-low px-2.5 py-1 font-mono text-[11px] hover:bg-surface-mid"
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
         <L t="Cliente">
           <input required className={inputCls} value={f.client} onChange={set("client")} />
         </L>
@@ -693,7 +814,11 @@ export function NoveltyModal({ order, onClose }: { order: Order; onClose: () => 
     );
   };
   return (
-    <Modal title={`Reportar novedad · ${order.id}`} onClose={onClose}>
+    <Modal
+      title={`Reportar novedad · ${order.id}`}
+      onClose={onClose}
+      confirmOutsideClose="Se perderá la novedad que estás escribiendo."
+    >
       <form onSubmit={submit} className="flex flex-col gap-3">
         <label className="flex flex-col gap-1">
           <span className="label-caps text-muted-foreground">Tipo</span>

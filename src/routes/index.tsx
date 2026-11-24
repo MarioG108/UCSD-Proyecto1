@@ -3,6 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { Toaster } from "sonner";
 import { useSession, type Role } from "@/lib/auth";
+import { resetTours, runTour } from "@/lib/tour";
 import { useNovelties, useOrders } from "@/lib/db";
 import { Avatar, Icon, LOGO } from "@/components/app/shared";
 import { Login } from "@/components/app/Login";
@@ -103,6 +104,13 @@ function Shell({
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
+  // Tour por pantalla: se lanza solo la primera vez (estado guardado en el dispositivo)
+  useEffect(() => {
+    if (orders.isLoading) return;
+    const t = setTimeout(() => void runTour(view), 700);
+    return () => clearTimeout(t);
+  }, [view, orders.isLoading]);
+
   const refresh = () => {
     qc.invalidateQueries({ queryKey: ["orders"] });
     qc.invalidateQueries({ queryKey: ["novelties"] });
@@ -158,7 +166,7 @@ function Shell({
             <div className="label-caps text-muted-foreground">División Logística</div>
             <div className="truncate text-[13px] font-semibold">Grupo Ramos C. por A.</div>
           </div>
-          <nav className="flex flex-col gap-1 p-3">
+          <nav data-tour="nav" className="flex flex-col gap-1 p-3">
             {NAV.map((n) => {
               const active = view === n.view;
               const badge = n.view === "novelties" ? openNov.length : 0;
@@ -213,7 +221,11 @@ function Shell({
             >
               <Icon name="menu" className="text-[22px]" />
             </button>
-            <label className="relative hidden shrink-0 items-center md:flex" title="Sucursal">
+            <label
+              data-tour="branch"
+              className="relative hidden shrink-0 items-center md:flex"
+              title="Sucursal"
+            >
               <Icon
                 name="store"
                 className="pointer-events-none absolute left-3 text-[18px] text-primary"
@@ -235,7 +247,7 @@ function Shell({
                 className="pointer-events-none absolute right-2 text-[16px] text-muted-foreground"
               />
             </label>
-            <div className="relative flex-1">
+            <div data-tour="search" className="relative flex-1">
               <Icon
                 name="search"
                 className="absolute left-3 top-1/2 -translate-y-1/2 text-[18px] text-muted-foreground"
@@ -267,9 +279,18 @@ function Shell({
               <span className="h-2 w-2 animate-pulse rounded-full bg-success" />
               <span className="font-mono text-[11px] font-semibold">Centro de Despacho Activo</span>
             </div>
+            <button
+              aria-label="Ver tutorial de esta pantalla"
+              title="Ver tutorial de esta pantalla"
+              onClick={() => void runTour(view, { force: true })}
+              className="rounded-lg p-2 text-muted-foreground hover:bg-surface-mid hover:text-foreground"
+            >
+              <Icon name="help" className="text-[22px]" />
+            </button>
             <div className="relative">
               <button
                 aria-label="Notificaciones"
+                data-tour="bell"
                 onClick={() => {
                   setBell(!bell);
                   setProfile(false);
@@ -319,6 +340,7 @@ function Shell({
             <div className="relative">
               <button
                 aria-label="Perfil"
+                data-tour="profile"
                 onClick={() => {
                   setProfile(!profile);
                   setBell(false);
@@ -338,6 +360,17 @@ function Shell({
                       </div>
                     </div>
                   </div>
+                  <button
+                    onClick={() => {
+                      resetTours();
+                      setProfile(false);
+                      void runTour(view, { force: true });
+                    }}
+                    className="mt-1 flex w-full items-center gap-2 rounded-lg px-2 py-2 font-mono text-xs font-semibold hover:bg-surface-mid"
+                  >
+                    <Icon name="help" className="text-[16px]" />
+                    Reiniciar tutoriales
+                  </button>
                   <button
                     onClick={onLogout}
                     className="mt-1 flex w-full items-center gap-2 rounded-lg px-2 py-2 font-mono text-xs font-semibold hover:bg-surface-mid"
@@ -387,7 +420,7 @@ function Shell({
                   refreshing={orders.isFetching}
                   onRefresh={refresh}
                 />
-                <div id="pod" className="scroll-mt-20 xl:col-span-5">
+                <div id="pod" data-tour="pod" className="scroll-mt-20 xl:col-span-5">
                   {order ? (
                     <PodPanel key={order.id} order={order} role={role} />
                   ) : (

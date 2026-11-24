@@ -149,82 +149,97 @@ export function PodPanel({ order, role }: { order: Order; role: Role }) {
           </div>
         </div>
 
-        <div className="rounded-lg border border-border p-4">
-          <div className="mb-3 flex items-center justify-between">
-            <span className="label-caps text-muted-foreground">
-              Evidencia Fotográfica de Entrega
-            </span>
-            <span className="font-mono text-[11px] text-muted-foreground">Foto 1 de 2 • HD</span>
-          </div>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-5">
-            <div className="relative h-44 overflow-hidden rounded-md border border-border sm:col-span-2 sm:h-auto">
-              <img
-                src={POD_PHOTO}
-                alt="Evidencia de entrega"
-                className="h-full min-h-32 w-full object-cover"
-              />
-              <button
-                onClick={() => setHd(true)}
-                className="absolute bottom-1.5 right-1.5 rounded bg-surface/90 px-1.5 py-0.5 font-mono text-[10px] font-semibold hover:bg-surface"
-              >
-                Ver HD
-              </button>
-            </div>
-            <div className="flex flex-col gap-2 text-[13px] sm:col-span-3">
-              <span className="font-semibold">Checklist de Conformidad Técnica:</span>
-              {[
-                "Embalaje retirado sin rayaduras",
-                "Compresor y niveles verificados",
-                "Garantía sellada y entregada",
-              ].map((c) => (
-                <span key={c} className="flex items-center gap-1.5">
-                  <Icon name="check_circle" className="text-[16px] text-success" />
-                  {c}
+        {delivered ? (
+          <>
+            <div className="rounded-lg border border-border p-4">
+              <div className="mb-3 flex items-center justify-between">
+                <span className="label-caps text-muted-foreground">
+                  Evidencia Fotográfica de Entrega
                 </span>
-              ))}
+                <span className="font-mono text-[11px] text-muted-foreground">
+                  Foto 1 de 2 • HD
+                </span>
+              </div>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-5">
+                <div className="relative h-44 overflow-hidden rounded-md border border-border sm:col-span-2 sm:h-auto">
+                  <img
+                    src={POD_PHOTO}
+                    alt="Evidencia de entrega"
+                    className="h-full min-h-32 w-full object-cover"
+                  />
+                  <button
+                    onClick={() => setHd(true)}
+                    className="absolute bottom-1.5 right-1.5 rounded bg-surface/90 px-1.5 py-0.5 font-mono text-[10px] font-semibold hover:bg-surface"
+                  >
+                    Ver HD
+                  </button>
+                </div>
+                <div className="flex flex-col gap-2 text-[13px] sm:col-span-3">
+                  <span className="font-semibold">Checklist de Conformidad Técnica:</span>
+                  {[
+                    "Embalaje retirado sin rayaduras",
+                    "Compresor y niveles verificados",
+                    "Garantía sellada y entregada",
+                  ].map((c) => (
+                    <span key={c} className="flex items-center gap-1.5">
+                      <Icon name="check_circle" className="text-[16px] text-success" />
+                      {c}
+                    </span>
+                  ))}
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
 
-        <div className="rounded-lg border border-border p-4">
-          <div className="mb-3 flex items-center justify-between">
-            <span className="label-caps text-muted-foreground">Firma Digital del Receptor</span>
-            <span className="rounded-full border border-success-line bg-success-soft px-2 py-0.5 font-mono text-[10px] font-bold text-success-ink">
-              OTP-77421 VALIDADO
-            </span>
-          </div>
-          <div className="flex h-24 items-center justify-center rounded-md border border-dashed border-border bg-surface-low text-foreground">
-            <svg
-              viewBox="0 0 200 60"
-              className="h-16 w-56"
-              fill="none"
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2.2"
-            >
-              <path d="M 20 40 C 35 15, 45 10, 50 35 C 55 50, 60 52, 75 25 C 85 10, 95 45, 110 30 C 120 20, 135 22, 145 35 C 150 42, 165 18, 185 28" />
-              <path
-                d="M 40 48 L 170 42"
-                strokeDasharray="3 3"
-                strokeWidth="1.2"
-                className="text-outline"
-              />
-            </svg>
-          </div>
-          <div className="mt-2 flex flex-wrap justify-between gap-1 font-mono text-[11px] text-muted-foreground">
-            <span>Hash: SHA256-d7a8e1b...</span>
-            <span>
-              Firmante: <strong className="text-foreground">{order.client}</strong>
-            </span>
-            <span>Dispositivo: PDA Zebra TC57 (ID: ZEB-04)</span>
-          </div>
-        </div>
+            <div className="rounded-lg border border-border p-4">
+              <div className="mb-3 flex items-center justify-between">
+                <span className="label-caps text-muted-foreground">Firma Digital del Receptor</span>
+                <span className="rounded-full border border-success-line bg-success-soft px-2 py-0.5 font-mono text-[10px] font-bold text-success-ink">
+                  OTP-77421 VALIDADO
+                </span>
+              </div>
+              <div className="flex h-24 items-center justify-center rounded-md border border-dashed border-border bg-surface-low text-foreground">
+                <svg
+                  viewBox="0 0 200 60"
+                  className="h-16 w-56"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2.2"
+                >
+                  <path d="M 20 40 C 35 15, 45 10, 50 35 C 55 50, 60 52, 75 25 C 85 10, 95 45, 110 30 C 120 20, 135 22, 145 35 C 150 42, 165 18, 185 28" />
+                  <path
+                    d="M 40 48 L 170 42"
+                    strokeDasharray="3 3"
+                    strokeWidth="1.2"
+                    className="text-outline"
+                  />
+                </svg>
+              </div>
+              <div className="mt-2 flex flex-wrap justify-between gap-1 font-mono text-[11px] text-muted-foreground">
+                <span>Hash: SHA256-d7a8e1b...</span>
+                <span>
+                  Firmante: <strong className="text-foreground">{order.client}</strong>
+                </span>
+                <span>Dispositivo: PDA Zebra TC57 (ID: ZEB-04)</span>
+              </div>
+            </div>
+          </>
+        ) : (
+          <p className="rounded-lg border border-dashed border-border bg-surface-low p-4 text-[13px] text-muted-foreground">
+            La evidencia fotográfica, la firma digital y el vale POD estarán disponibles cuando la
+            orden sea entregada.
+          </p>
+        )}
 
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => downloadVale(order)}
-            className="flex w-full items-center justify-center gap-1.5 rounded-lg bg-primary px-3 py-2.5 font-mono text-xs font-semibold text-primary-foreground shadow-primary hover:bg-primary-strong sm:w-auto sm:flex-1"
+            disabled={!delivered}
+            title={
+              delivered ? "Descargar vale POD en PDF" : "Disponible cuando la orden sea entregada"
+            }
+            className="flex w-full items-center justify-center gap-1.5 rounded-lg bg-primary px-3 py-2.5 font-mono text-xs font-semibold text-primary-foreground shadow-primary hover:bg-primary-strong disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto sm:flex-1"
           >
             <Icon name="download" className="text-[16px]" />
             Descargar Vale POD (PDF)
