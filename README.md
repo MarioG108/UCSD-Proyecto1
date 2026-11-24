@@ -28,3 +28,9 @@ npm run dev
 - React
 - Tailwind CSS
 "# UCSD-Proyecto1" 
+
+## MVP: login + Supabase
+
+- Login demo (cliente): `admin / admin` (crea, avanza, elimina despachos y resuelve novedades) y `user / user` (solo consulta y reporta novedades).
+- Datos en Supabase (`dispatch_orders`, `novelties`), con seed dummy. Variables en `.env` (ver `.env.example`).
+- **Antes de producción**: migrar el login a Supabase Auth y restringir las políticas RLS (hoy `anon` tiene acceso total para el demo).
