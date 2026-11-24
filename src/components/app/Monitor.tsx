@@ -814,7 +814,11 @@ export function NoveltyModal({ order, onClose }: { order: Order; onClose: () => 
     );
   };
   return (
-    <Modal title={`Reportar novedad · ${order.id}`} onClose={onClose}>
+    <Modal
+      title={`Reportar novedad · ${order.id}`}
+      onClose={onClose}
+      confirmOutsideClose="Se perderá la novedad que estás escribiendo."
+    >
       <form onSubmit={submit} className="flex flex-col gap-3">
         <label className="flex flex-col gap-1">
           <span className="label-caps text-muted-foreground">Tipo</span>
