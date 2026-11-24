@@ -389,12 +389,7 @@ function Shell({
                 />
                 <div id="pod" className="scroll-mt-20 xl:col-span-5">
                   {order ? (
-                    <PodPanel
-                      key={order.id}
-                      order={order}
-                      role={role}
-                      onDeleted={() => setSelected("")}
-                    />
+                    <PodPanel key={order.id} order={order} role={role} />
                   ) : (
                     <p className="text-muted-foreground">Selecciona un despacho.</p>
                   )}
