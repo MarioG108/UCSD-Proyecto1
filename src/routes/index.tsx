@@ -30,6 +30,14 @@ export const Route = createFileRoute("/")({
   component: App,
 });
 
+// Puntualidad (OTD) dummy por sucursal
+const OTD_BY_BRANCH: Record<string, number> = {
+  "Sucursal Churchill": 95.1,
+  "Sucursal Luperón": 93.4,
+  "Sucursal San Isidro": 94.6,
+  "Sucursal Villa Mella": 92.2,
+};
+
 type View = "dashboard" | "routes" | "crews" | "novelties" | "pod";
 const NAV: { view: View; icon: string; label: string }[] = [
   { view: "dashboard", icon: "dashboard", label: "Dashboard (Overview)" },
@@ -79,6 +87,9 @@ function Shell({
   const list = orders.data ?? [];
   const nov = novelties.data ?? [];
   const openNov = nov.filter((n) => !n.resolved);
+  const branchOrders = branch === ALL_BRANCHES ? list : list.filter((o) => o.branch === branch);
+  const branchIds = new Set(branchOrders.map((o) => o.id));
+  const branchNov = nov.filter((n) => branchIds.has(n.order_id));
   const order = list.find((o) => o.id === selected) ?? list[0];
 
   useEffect(() => {
@@ -356,8 +367,10 @@ function Shell({
           {!orders.isLoading && view === "dashboard" && (
             <>
               <KpiRow
-                orders={list}
-                novelties={nov}
+                orders={branchOrders}
+                novelties={branchNov}
+                otd={OTD_BY_BRANCH[branch] ?? 94.2}
+                branch={branch}
                 onGoNovelties={() => go("novelties")}
                 onGoRoutes={() => go("routes")}
               />

@@ -85,11 +85,15 @@ function Bar({ pct, color }: { pct: number; color: string }) {
 export function KpiRow({
   orders,
   novelties,
+  otd,
+  branch,
   onGoNovelties,
   onGoRoutes,
 }: {
   orders: Order[];
   novelties: Novelty[];
+  otd: number;
+  branch: string;
   onGoNovelties: () => void;
   onGoRoutes: () => void;
 }) {
@@ -98,7 +102,6 @@ export function KpiRow({
     (o) => o.status === "Entregado conforme" || o.status === "Novedad en ruta",
   ).length;
   const firstTry = closed ? Math.round((delivered / closed) * 1000) / 10 : 0;
-  const otd = 94.2; // dato dummy
   const inRoute = orders.filter((o) =>
     ["En camino", "En punto de entrega", "Asignado a ruta"].includes(o.status),
   );
@@ -108,6 +111,7 @@ export function KpiRow({
   const count = (t: string) => open.filter((n) => n.type === t).length;
   return (
     <section className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
+      <p className="label-caps col-span-full text-muted-foreground">Indicadores · {branch}</p>
       <Kpi
         title="Tasa de Puntualidad (OTD)"
         value={`${otd}%`}
