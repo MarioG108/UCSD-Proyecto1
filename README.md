@@ -1,6 +1,6 @@
-# La Sirena · Control de Despachos (UCSD – Proyecto 1)
+# Control de Despachos (UCSD – Proyecto 1)
 
-MVP web para dar seguimiento a las entregas de mercancía de la División Logística (Grupo Ramos C. por A.): indicadores, monitor de despachos en vivo, expediente digital **POD** (Proof of Delivery), novedades, cuadrillas y rutas.
+MVP web para dar seguimiento a las entregas de mercancía de una división logística: indicadores, monitor de despachos en vivo, expediente digital **POD** (Proof of Delivery), novedades, cuadrillas y rutas.
 
 - **Producción:** <https://ucsd-rutas.mario-g.com/> (alterna: <https://ucsd-rutas.vercel.app/>)
 - **Manual de usuario (Word):** [`docs/Manual-de-Usuario.docx`](docs/Manual-de-Usuario.docx)

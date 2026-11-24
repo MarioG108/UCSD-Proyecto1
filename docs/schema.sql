@@ -1,4 +1,4 @@
--- Esquema de la base de datos (Supabase / Postgres) de La Sirena · Control de Despachos.
+-- Esquema de la base de datos (Supabase / Postgres) de Control de Despachos.
 -- Ejecutar en el SQL Editor de un proyecto Supabase nuevo para recrear las tablas.
 -- No incluye datos de ejemplo: cree despachos desde la app (admin) o inserte filas a mano.
 
